@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --colors -w ./test/*.spec.js",
     "test-travis": "mocha --compilers js:babel-core/register ./test/*.spec.js",
-    "cover": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register ./test/*.spec.js",
+    "cover": "babel-node node_modules/istanbul/lib/cli cover node_modules/mocha/bin/_mocha ./test/*.spec.js",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
     "lint": "esw --watch src test",
     "build": "webpack -p --env build",
