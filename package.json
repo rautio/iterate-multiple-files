@@ -20,7 +20,7 @@
     "type": "git",
     "url": "https://github.com/rautio/iterate-multiple-files.git"
   },
-  "keywords":[
+  "keywords": [
     "multiple files",
     "iterate files",
     "file iterator",

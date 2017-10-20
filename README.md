@@ -61,7 +61,7 @@ Will come in v0.2.0
 ## Generator functionality
 Will come in v0.2.0
 
-## Stream functinality
+## Stream functionality
 Will come in a TBD version
 
 # Motivation
