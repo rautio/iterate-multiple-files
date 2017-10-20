@@ -1,7 +1,9 @@
-[![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url]
+[![travis][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url]
 
 [travis-image]: https://travis-ci.org/rautio/iterate-multiple-files.svg?branch=master
 [travis-url]: https://travis-ci.org/rautio/iterate-multiple-files
+[coveralls-image]:https://coveralls.io/repos/github/rautio/iterate-multiple-files/badge.svg?branch=master
+[coveralls-url]:https://coveralls.io/github/rautio/iterate-multiple-files?branch=master
 [npm-image]: https://img.shields.io/npm/v/iterate-multiple-files.svg
 [npm-url]: https://npmjs.org/package/iterate-multiple-files
 [downloads-image]: https://img.shields.io/npm/dm/iterate-multiple-files.svg
