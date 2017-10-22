@@ -8,4 +8,6 @@ node_js:
 install:
   - npm install
 script:
-  - npm run test-once
+  - npm run test-travis
+after_success:
+  - npm run coveralls
