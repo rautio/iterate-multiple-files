@@ -7,7 +7,7 @@
 [downloads-image]: https://img.shields.io/npm/dm/iterate-multiple-files.svg
 [downloads-url]: https://npmjs.org/package/iterate-multiple-files
 
-Iterate through multiple files at the same time line by line.
+Iterate through multiple files at the same time line by line without loading into memory.
 
 # Install
 ```npm install iterate-multiple-files```

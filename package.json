@@ -1,7 +1,7 @@
 {
   "name": "iterate-multiple-files",
   "version": "0.1.0",
-  "description": "Iterate through multiple files at the same time line by line.",
+  "description": "Iterate through multiple files at the same time line by line without loading into memory.",
   "main": "lib/iterate-multiple-files.min.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --colors -w ./test/*.spec.js",
