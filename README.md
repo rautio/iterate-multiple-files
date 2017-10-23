@@ -19,7 +19,7 @@ Iterate through multiple files at the same time line by line without loading int
 ## iterate
 
 ```javascript
-import mf from 'iterate-multiple-files';
+import imf from 'iterate-multiple-files';
 
 let runningSum = 0;
 
@@ -37,7 +37,7 @@ function operation(lines){
 }
 
 //Using a promise:
-mf.iterate(['path-to-file1','path-to-file2'],operation)
+imf.iterate(['path-to-file1','path-to-file2'],operation)
   .then(function(result){
     //Do something with the result
     //Result is an array of each line's sum
@@ -49,11 +49,11 @@ mf.iterate(['path-to-file1','path-to-file2'],operation)
 ### Using a callback
 ```javascript
 //Using a callback:
-mf.iterate(['path-to-file1','path-to-file2'],operation, function(err, result){
+imf.iterate(['path-to-file1','path-to-file2'],operation, function(err, result){
   if(err){
     //Handle the error
   }
-  //Do something with result  
+  //Do something with result
 });
 ```
 
