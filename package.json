@@ -13,7 +13,7 @@
     "lint:watch": "esw --watch src test",
     "build": "webpack -p --env build",
     "dev": "webpack --progress --colors --watch --env dev",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "doc": "jsdoc src -r -d doc/ --private --readme README.md"
   },
   "author": {
