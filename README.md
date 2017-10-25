@@ -9,7 +9,7 @@
 [downloads-image]: https://img.shields.io/npm/dm/iterate-multiple-files.svg
 [downloads-url]: https://npmjs.org/package/iterate-multiple-files
 
-Iterate through multiple files at the same time line by line without loading into memory.
+Iterate through multiple files or streams at the same time line by line without loading into memory.
 
 # Install
 ```npm install iterate-multiple-files```
@@ -37,7 +37,8 @@ function operation(lines){
 }
 
 //Using a promise:
-imf.iterate(['path-to-file1','path-to-file2'],operation)
+//You can pass in all files, all Readable streams or a combination of both in the same array
+imf.iterate(['path-to-file1','path-to-file2', fs.createReadStream('path-to-file3')],operation)
   .then(function(result){
     //Do something with the result
     //Result is an array of each line's sum
@@ -49,7 +50,8 @@ imf.iterate(['path-to-file1','path-to-file2'],operation)
 ### Using a callback
 ```javascript
 //Using a callback:
-imf.iterate(['path-to-file1','path-to-file2'],operation, function(err, result){
+//You can pass in all files, all Readable streams or a combination of both in the same array
+imf.iterate(['path-to-file1','path-to-file2',fs.createReadStream('path-to-file3')],operation, function(err, result){
   if(err){
     //Handle the error
   }
@@ -58,12 +60,9 @@ imf.iterate(['path-to-file1','path-to-file2'],operation, function(err, result){
 ```
 
 ## Iterator functionality
-Will come in v0.2.0
+Will come in a TBD version
 
 ## Generator functionality
-Will come in v0.2.0
-
-## Stream functionality
 Will come in a TBD version
 
 # Motivation

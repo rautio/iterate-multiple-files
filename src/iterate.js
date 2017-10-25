@@ -1,5 +1,33 @@
+import util from 'util';
 import fs from 'fs';
 import es from 'event-stream';
+import stream from 'stream';
+
+const pass = stream.PassThrough;
+
+const Readable = stream.Readable;
+
+const ReadableStream = function(readableStream, options) {
+    let me = this;
+    Readable.call(me, options);
+
+    readableStream.on("data", function(chunk) {
+        me.push(chunk);
+    });
+
+    readableStream.on('end', function() {
+        me.push(null);
+    });
+
+    readableStream.on("error", function(err) {
+        me.push(err);
+    });
+    me._read = function() {
+    };
+};
+
+util.inherits(ReadableStream, Readable);
+
 
 export default function(filePaths, operationFunction, callback){
   const cb = callback || function(){};
@@ -9,9 +37,15 @@ export default function(filePaths, operationFunction, callback){
     let lineNrs = [];
     let lines = [];
     let fileComplete = [];
-    let lineCounts = [];
+    let fileEnd = [];
     let result = [];
-    let fileLengths = [];
+
+    const isReadableStream = function(obj) {
+      return obj instanceof stream.Stream &&
+        typeof (obj._read === 'function') &&
+        typeof (obj._readableState === 'object');
+    };
+
 
     const areWeDone = function(finishedFile){
       let allDone = true;
@@ -28,10 +62,10 @@ export default function(filePaths, operationFunction, callback){
       }
     };
 
-    const countLines = function(path){
+    const countLines = function(stream){
       return new Promise(function(resolve,reject){
         let count = 0;
-        fs.createReadStream(path)
+        stream
           .pipe(es.split())
           .pipe(es.mapSync(function(line){
             count++;
@@ -62,8 +96,8 @@ export default function(filePaths, operationFunction, callback){
       //     different size and that they are responsible. This case occurs when
       //     the lineNrs[i] is greater than or equal to that file's # of lines
       for(let i = 0; i < lineNrs.length; i++){
-        //lineNrs starts at 0 index, lineCounts starts at 1
-        if((lineNrs[i] != lineNr && lineNrs[i] < lineCounts[i]) || lineNrs[i] == 0){
+        //lineNrs starts at 0 index, fileEnd starts at 1
+        if((lineNrs[i] != lineNr && !fileEnd[i]) || lineNrs[i] == 0){
           sameLine = false;
           break;
         }
@@ -85,39 +119,37 @@ export default function(filePaths, operationFunction, callback){
 
     for( let i = 0; i < filePaths.length; i++){
       //Add new entries for each file
+      let count = 0;
       fileComplete.push(false);
       lines.push(null);
       lineNrs.push(0);
-      fileLengths.push(fs.statSync(filePaths[i]));
-      lineCounts.push(0);
-      countLines(filePaths[i])
-        .then(function(count){
-          lineCounts[i] = count;
-          streams.push(fs.createReadStream(filePaths[i])
-            .pipe(es.split())
-            .pipe(es.mapSync(function(line){
-              streams[i].pause();
-              lineNrs[i]++;
-              lines[i] = line;
-              operation();
-            }))
-            .on('error',function(err){
-              reject(err);
-              return cb(err,null);
-            })
-            .on('end',function(){
-              fileComplete[i] = true;
-              //If a specific file is complete, reset its line to null before we pass
-              //back to the user.
-              lines[i] = null;
-              areWeDone(i);
-            })
-          );
-        })
-        .catch(function(err){
+      fileEnd.push(false);
+      let countStream = null;
+      let lineStream = null;
+      let s = filePaths[i]; // Could be either a stream or a file at this point
+      if(!isReadableStream(s)){
+        s = fs.createReadStream(s);
+      }
+      streams.push(s
+        .pipe(es.split())
+        .pipe(es.mapSync(function(line){
+          streams[i].pause();
+          count++;
+          lineNrs[i]++;
+          lines[i] = line;
+          operation();
+        }.bind(this)))
+        .on('error',function(err){
           reject(err);
           return cb(err,null);
-        });
-      }
+        })
+        .on('end',function(){
+          fileComplete[i] = true;
+          lines[i] = null;
+          fileEnd[i] = true;
+          areWeDone(i);
+        })
+      );
+    }
   });
 }
