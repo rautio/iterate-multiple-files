@@ -11,16 +11,16 @@ describe('.iterate(files, operation).then', function(){
   const str6 = '';
 
   //Write a few files to disk for testing purposes
-  fs.writeFileSync('./test/temp_file1.csv',str1);
-  fs.writeFileSync('./test/temp_file2.csv',str2);
-  fs.writeFileSync('./test/temp_file3.csv',str3);
-  fs.writeFileSync('./test/temp_file4.csv',str4);
-  fs.writeFileSync('./test/temp_file5.csv',str5);
-  fs.writeFileSync('./test/temp_file6.csv',str6);
-  fs.writeFileSync('./test/temp_file7.csv',str6);
-  const filePaths = ['./test/temp_file1.csv','./test/temp_file2.csv','./test/temp_file3.csv'];
-  const mismatchFilePaths = ['./test/temp_file4.csv', './test/temp_file5.csv'];
-  const emptyFilePaths = ['./test/temp_file6.csv', './test/temp_file7.csv'];
+  fs.writeFileSync('./test/temp_iterator_file1.csv',str1);
+  fs.writeFileSync('./test/temp_iterator_file2.csv',str2);
+  fs.writeFileSync('./test/temp_iterator_file3.csv',str3);
+  fs.writeFileSync('./test/temp_iterator_file4.csv',str4);
+  fs.writeFileSync('./test/temp_iterator_file5.csv',str5);
+  fs.writeFileSync('./test/temp_iterator_file6.csv',str6);
+  fs.writeFileSync('./test/temp_iterator_file7.csv',str6);
+  const filePaths = ['./test/temp_iterator_file1.csv','./test/temp_iterator_file2.csv','./test/temp_iterator_file3.csv'];
+  const mismatchFilePaths = ['./test/temp_iterator_file4.csv', './test/temp_iterator_file5.csv'];
+  const emptyFilePaths = ['./test/temp_iterator_file6.csv', './test/temp_iterator_file7.csv'];
   const expected = [15,18,21,24];
   const expectedTotal = 78;
   let total = 0;
@@ -173,13 +173,13 @@ describe('.iterate(files, operation).then', function(){
 
   //Cleanup
   after(function(){
-    fs.unlinkSync('./test/temp_file1.csv');
-    fs.unlinkSync('./test/temp_file2.csv');
-    fs.unlinkSync('./test/temp_file3.csv');
-    fs.unlinkSync('./test/temp_file4.csv');
-    fs.unlinkSync('./test/temp_file5.csv');
-    fs.unlinkSync('./test/temp_file6.csv');
-    fs.unlinkSync('./test/temp_file7.csv');
+    fs.unlinkSync('./test/temp_iterator_file1.csv');
+    fs.unlinkSync('./test/temp_iterator_file2.csv');
+    fs.unlinkSync('./test/temp_iterator_file3.csv');
+    fs.unlinkSync('./test/temp_iterator_file4.csv');
+    fs.unlinkSync('./test/temp_iterator_file5.csv');
+    fs.unlinkSync('./test/temp_iterator_file6.csv');
+    fs.unlinkSync('./test/temp_iterator_file7.csv');
   });
 });
 

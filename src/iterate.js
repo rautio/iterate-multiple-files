@@ -2,32 +2,7 @@ import util from 'util';
 import fs from 'fs';
 import es from 'event-stream';
 import stream from 'stream';
-
-const pass = stream.PassThrough;
-
-const Readable = stream.Readable;
-
-const ReadableStream = function(readableStream, options) {
-    let me = this;
-    Readable.call(me, options);
-
-    readableStream.on("data", function(chunk) {
-        me.push(chunk);
-    });
-
-    readableStream.on('end', function() {
-        me.push(null);
-    });
-
-    readableStream.on("error", function(err) {
-        me.push(err);
-    });
-    me._read = function() {
-    };
-};
-
-util.inherits(ReadableStream, Readable);
-
+import isReadableStream from './isReadableStream';
 
 export default function(filePaths, operationFunction, callback){
   const cb = callback || function(){};
@@ -37,17 +12,9 @@ export default function(filePaths, operationFunction, callback){
     let lineNrs = [];
     let lines = [];
     let fileComplete = [];
-    let fileEnd = [];
     let result = [];
 
-    const isReadableStream = function(obj) {
-      return obj instanceof stream.Stream &&
-        typeof (obj._read === 'function') &&
-        typeof (obj._readableState === 'object');
-    };
-
-
-    const areWeDone = function(finishedFile){
+    const areWeDone = function(){
       let allDone = true;
       for(let i = 0; i < fileComplete.length; i++){
         if(!fileComplete[i]){
@@ -60,23 +27,6 @@ export default function(filePaths, operationFunction, callback){
         resolve(result);
         return cb(null, result);
       }
-    };
-
-    const countLines = function(stream){
-      return new Promise(function(resolve,reject){
-        let count = 0;
-        stream
-          .pipe(es.split())
-          .pipe(es.mapSync(function(line){
-            count++;
-          }))
-          .on('end',function(){
-            resolve(count);
-          })
-          .on('error',function(err){
-            reject(err);
-          });
-      });
     };
 
     const operation = function(){
@@ -96,8 +46,8 @@ export default function(filePaths, operationFunction, callback){
       //     different size and that they are responsible. This case occurs when
       //     the lineNrs[i] is greater than or equal to that file's # of lines
       for(let i = 0; i < lineNrs.length; i++){
-        //lineNrs starts at 0 index, fileEnd starts at 1
-        if((lineNrs[i] != lineNr && !fileEnd[i]) || lineNrs[i] == 0){
+        //lineNrs starts at 0 index, fileComplete starts at 1
+        if((lineNrs[i] != lineNr && !fileComplete[i]) || lineNrs[i] == 0){
           sameLine = false;
           break;
         }
@@ -119,13 +69,9 @@ export default function(filePaths, operationFunction, callback){
 
     for( let i = 0; i < filePaths.length; i++){
       //Add new entries for each file
-      let count = 0;
       fileComplete.push(false);
       lines.push(null);
       lineNrs.push(0);
-      fileEnd.push(false);
-      let countStream = null;
-      let lineStream = null;
       let s = filePaths[i]; // Could be either a stream or a file at this point
       if(!isReadableStream(s)){
         s = fs.createReadStream(s);
@@ -134,7 +80,6 @@ export default function(filePaths, operationFunction, callback){
         .pipe(es.split())
         .pipe(es.mapSync(function(line){
           streams[i].pause();
-          count++;
           lineNrs[i]++;
           lines[i] = line;
           operation();
@@ -146,8 +91,7 @@ export default function(filePaths, operationFunction, callback){
         .on('end',function(){
           fileComplete[i] = true;
           lines[i] = null;
-          fileEnd[i] = true;
-          areWeDone(i);
+          areWeDone();
         })
       );
     }
